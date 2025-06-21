@@ -61,8 +61,8 @@ public class SampleGcpDemoApplication {
 	}
 
 	@MessagingGateway(defaultRequestChannel = "pubsubOutputChannel")
-	public interface PubsubOutboundGateway {
+	public interface PubSubOutboundGateway {
 
-		void sendToPubsub(String text);
+		void sendToPubSub(String text);
 	}
 }

@@ -1,6 +1,6 @@
 package com.sample.gcp.controller;
 
-import static com.sample.gcp.SampleGcpDemoApplication.PubsubOutboundGateway;
+import static com.sample.gcp.SampleGcpDemoApplication.PubSubOutboundGateway;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,11 +17,11 @@ import org.springframework.web.servlet.view.RedirectView;
 public class WebController {
 
     @Autowired
-    private PubsubOutboundGateway messagingGateway;
+    private PubSubOutboundGateway messagingGateway;
 
     @PostMapping("/publishMessage")
     public RedirectView publishMessage(@RequestParam("message") String message) throws InterruptedException {
-        messagingGateway.sendToPubsub(message);
+        messagingGateway.sendToPubSub(message);
         return new RedirectView("/");
     }
 }
