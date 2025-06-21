@@ -1,6 +1,4 @@
 name: sample gcp demo
-description: Demo project for Spring Boot
-author: Pradeep Kumar
 
 on:
   push:
