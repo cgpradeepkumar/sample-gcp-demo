@@ -1,4 +1,4 @@
-package com.sample.gcp;
+package com.sample.gcp.gateway;
 
 
 class SampleGcpDemoApplicationTests {

@@ -1,6 +1,6 @@
-package com.sample.gcp.controller;
+package com.sample.gcp.gateway.controller;
 
-import static com.sample.gcp.SampleGcpDemoApplication.PubSubOutboundGateway;
+import static com.sample.gcp.gateway.SampleGcpDemoApplication.PubSubOutboundGateway;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
