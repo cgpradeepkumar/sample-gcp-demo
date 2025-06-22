@@ -37,9 +37,10 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
 
       - name: Deploy to GKE
-        uses: google-github-actions/deploy-gke@v2 # Or the latest stable version
+        uses: google-github-actions/deploy-gke-container@v0.1 # Or the latest stable version
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
+          project_id: ${{ env.PROJECT_ID }}
           location: ${{ env.GKE_ZONE_OR_REGION }}
           namespace: ${{ env.NAMESPACE }}
           # If your deployment.yaml directly references the Docker Hub image, use k8s_manifests:
