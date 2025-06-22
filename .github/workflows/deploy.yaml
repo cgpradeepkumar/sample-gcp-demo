@@ -41,7 +41,8 @@ jobs:
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
           project_id: ${{ env.PROJECT_ID }}
-          location: ${{ env.GKE_ZONE_OR_REGION }}
+#          location: ${{ env.GKE_ZONE_OR_REGION }}
+          region: ${{ env.GKE_ZONE_OR_REGION }}
           namespace: ${{ env.NAMESPACE }}
           # If your deployment.yaml directly references the Docker Hub image, use k8s_manifests:
 #          k8s_manifests: |
