@@ -1,0 +1,69 @@
+name: Deploy to GKE Cluster
+
+on:
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  GKE_CLUSTER_NAME: sample-gcp-demo-cluster
+  GKE_CLUSTER_REGION: us-central1
+  DOCKER_IMAGE: cgpradeepkumar/sample-gcp-gateway:latest
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Google Cloud CLI
+        uses: GoogleCloudPlatform/setup-gcloud-action@v1
+        with:
+          version: latest
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Authenticate with gcloud
+        run: gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+
+      - name: Set the default project
+        run: gcloud config set project ${{ env.PROJECT_ID }}
+
+      - name: Get GKE Cluster Credentials
+        run: |
+          gcloud container clusters get-credentials ${{ env.GKE_CLUSTER_NAME }} \
+            --region ${{ env.GKE_CLUSTER_REGION }} # Use --zone if your cluster is zonal
+
+      - name: Deploy to GKE
+        run: |
+          kubectl apply -f - <<EOF
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: sample-gcp-gateway-deployment
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: sample-gcp-gateway
+            template:
+              metadata:
+                labels:
+                  app: sample-gcp-gateway
+              spec:
+                containers:
+                  - name: sample-gcp-gateway
+                    image: ${{ env.DOCKER_IMAGE }}
+                    ports:
+                      - containerPort: 8080
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: sample-gcp-gateway-service
+          spec:
+            selector:
+              app: sample-gcp-gateway
+            ports:
+              - protocol: TCP
+                port: 80
+                targetPort: 8080
+            type: LoadBalancer
+          EOF
