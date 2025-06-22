@@ -34,6 +34,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./sample-gcp-gateway
-          file: Dockerfile
+          file: ./sample-gcp-gateway/Dockerfile
           push: true
           tags: latest
