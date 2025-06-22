@@ -1,4 +1,4 @@
-name: sample gcp demo
+name: Sample GCP Demo Build
 
 on:
   push:
