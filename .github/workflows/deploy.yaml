@@ -19,41 +19,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Authenticate to Google Cloud
-        id: auth
-        uses: google-github-actions/auth@v2
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
         with:
-          # Using Workload Identity Federation (recommended)
-#          workload_identity_provider: 'projects/${{ env.PROJECT_ID }}/locations/global/workloadIdentityPools/your-pool-name/providers/your-provider-name'
-#          service_account: 'your-service-account-email@${{ env.PROJECT_ID }}.iam.gserviceaccount.com'
-          # OR (less secure, but for quick testing if you must)
-          credentials_json: ${{ secrets.GCP_SA_KEY }} # Store your SA key JSON in a GitHub Secret named GCP_SA_KEY
-
-      - name: Set up GKE credentials
-        uses: google-github-actions/get-gke-credentials@v2
-        with:
-          cluster_name: ${{ env.GKE_CLUSTER }}
-          location: ${{ env.GKE_ZONE_OR_REGION }}
           project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
 
-      - name: Deploy to GKE
-        uses: google-github-actions/deploy-gke@v0.0.3 # Or the latest stable version
+      - name: Get GKE Credentials
+        run: gcloud container clusters get-credentials ${env.GKE_CLUSTER} --zone ${env.GKE_ZONE_OR_REGION }}
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
         with:
-          cluster_name: ${{ env.GKE_CLUSTER }}
-          project_id: ${{ env.PROJECT_ID }}
-#          location: ${{ env.GKE_ZONE_OR_REGION }}
-          region: ${{ env.GKE_ZONE_OR_REGION }}
-          namespace: ${{ env.NAMESPACE }}
-          # If your deployment.yaml directly references the Docker Hub image, use k8s_manifests:
-#          k8s_manifests: |
-#            deployment/deployment.yaml
-#            deployment/service.yaml # Include any other relevant manifests
-          # Alternatively, if you want to let the action manage the deployment name and image:
-          image: ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
-          app_name: ${{ env.DEPLOYMENT_NAME }}
-          expose: 80 # Optional: If you want to expose a port directly
+          version: latest
 
-      - name: Verify Deployment (Optional)
+      - name: Deploy with Helm
         run: |
-          kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.NAMESPACE }}
-          kubectl get service -n ${{ env.NAMESPACE }}
+          IMAGE_TAG=${{ github.event.workflow_run.head_sha }}
+          echo "Deploying image tag: $IMAGE_TAG"
+
+          helm upgrade --install sample-gcp-gateway ./charts \
+            --set image.repository=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }} \
+            --set image.tag=$IMAGE_TAG \
+            --namespace demo --create-namespace
+
