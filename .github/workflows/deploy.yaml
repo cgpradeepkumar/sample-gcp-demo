@@ -29,6 +29,7 @@ jobs:
         with:
           project_id: ${{ env.GCP_PROJECT }}
           version: latest
+          component: 'gke-gcloud-auth-plugin'
 
       - name: Get GKE Credentials
         run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE_OR_REGION }}
