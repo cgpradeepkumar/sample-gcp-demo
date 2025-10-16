@@ -43,11 +43,8 @@ jobs:
 
       - name: Deploy with Helm
         run: |
-          IMAGE_TAG=${{ github.event.workflow_run.head_sha }}
-          echo "Deploying image tag: $IMAGE_TAG"
-
           helm upgrade --install sample-gcp-gateway ./charts \
-            --set image.repository=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }} \
-            --set image.tag=$IMAGE_TAG \
-            --namespace demo --create-namespace
+            --set image.repository=${{ env.DOCKER_IMAGE_NAME }} \
+            --set image.tag=latest \
+            --namespace ${{ env.NAMESPACE }} --create-namespace
 
