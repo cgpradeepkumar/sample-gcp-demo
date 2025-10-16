@@ -9,6 +9,10 @@ service:
   type: ClusterIP
   port: 8080
 
+serviceAccount:
+  create: false
+  name: sample-gcp-gateway-sa
+
 ingress:
   enabled: false
   className: ""
