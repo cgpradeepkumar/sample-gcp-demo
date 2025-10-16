@@ -34,7 +34,7 @@ jobs:
         run: gcloud components install gke-gcloud-auth-plugin --quiet
 
       - name: Get GKE Credentials
-        run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE_OR_REGION }}
+        run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --region ${{ env.GKE_ZONE_OR_REGION }}
 
       - name: Setup Helm
         uses: azure/setup-helm@v4
