@@ -8,7 +8,7 @@ env:
   GKE_CLUSTER: sample-gcp-demo-cluster
   GKE_ZONE_OR_REGION: us-central1
   DEPLOYMENT_NAME: sample-gcp-gateway
-  NAMESPACE: default
+  NAMESPACE: demo
   DOCKER_IMAGE_NAME: cgpradeepkumar/sample-gcp-gateway
   DOCKER_IMAGE_TAG: latest
 
